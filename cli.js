@@ -16,7 +16,7 @@ function log(message) {
 
 async function getFromMaster() {
   const execP = promisify(exec);
-  const { stdout } = await execP("git diff --name-status master~1..HEAD");
+  const { stdout } = await execP("git diff --name-status master..HEAD");
   return stdout
     .split("\n")
     .filter(Boolean)
