@@ -1,0 +1,19 @@
+{
+  "name": "jsninja-sensei",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Illya Klymov <xanf@xanf.me>",
+  "license": "MIT",
+  "bin": {
+    "jsninja-sensei": "./cli.js"
+  },
+  "dependencies": {
+    "globby": "^9.2.0",
+    "staged-git-files": "^1.1.2"
+  }
+}
