@@ -14,9 +14,9 @@ function log(message) {
   console.log(`${fgRed}${message}${reset}`);
 }
 
-async function getFromMaster() {
+async function getFrom(hash) {
   const execP = promisify(exec);
-  const { stdout } = await execP("git diff --name-status refs/heads/master..HEAD");
+  const { stdout } = await execP(`git diff --name-status refs/heads/${hash}..HEAD`);
   return stdout
     .split("\n")
     .filter(Boolean)
@@ -24,7 +24,7 @@ async function getFromMaster() {
 }
 
 async function run() {
-  const [, , isCi] = process.argv;
+  const [, , hash] = process.argv;
   const protectedConfig = path.resolve(process.cwd(), "./.jsninja/protected");
   if (!fs.existsSync(protectedConfig)) {
     console.log("No config found, exiting");
@@ -33,8 +33,8 @@ async function run() {
   const patterns = fs.readFileSync(protectedConfig, "utf-8").split("\n");
   const protectedFiles = await globby(patterns);
 
-  const changedFiles = isCi
-    ? await getFromMaster()
+  const changedFiles = hash
+    ? await getFrom(hash)
     : (await promisify(sgf)()).map(f => f.filename);
 
   const badFiles = changedFiles.filter(f => protectedFiles.includes(f));
