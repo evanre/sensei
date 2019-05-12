@@ -16,7 +16,7 @@ function log(message) {
 
 async function getFrom(hash) {
   const execP = promisify(exec);
-  const { stdout } = await execP(`git diff --name-status refs/heads/${hash}..HEAD`);
+  const { stdout } = await execP(`git diff --name-status ${hash}..HEAD`);
   return stdout
     .split("\n")
     .filter(Boolean)
