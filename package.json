@@ -13,6 +13,10 @@
     "jsninja-sensei": "./cli.js"
   },
   "dependencies": {
+    "array-union": "^2.1.0",
+    "dir-glob": "^2.2.2",
+    "fast-glob": "^2.0.2",
+    "glob": "^7.1.4",
     "globby": "^9.2.0",
     "staged-git-files": "^1.1.2"
   }

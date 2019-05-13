@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const globby = require("globby");
+const globby = require("./globby");
 const path = require("path");
 const fs = require("fs");
 const { exec } = require("child_process");
