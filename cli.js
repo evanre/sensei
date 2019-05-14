@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-
-const globby = require("./globby");
+const micromatch = require("micromatch");
 const path = require("path");
 const fs = require("fs");
 const { exec } = require("child_process");
@@ -31,13 +30,13 @@ async function run() {
     process.exit(0);
   }
   const patterns = fs.readFileSync(protectedConfig, "utf-8").split("\n");
-  const protectedFiles = await globby(patterns);
-
   const changedFiles = hash
     ? await getFrom(hash)
     : (await promisify(sgf)()).map(f => f.filename);
 
-  const badFiles = changedFiles.filter(f => protectedFiles.includes(f));
+  const badFiles = micromatch(changedFiles, patterns, {
+    dot: true
+  });
   if (badFiles.length) {
     log("These files are protected. You can't change them:");
     badFiles.forEach(f => {
