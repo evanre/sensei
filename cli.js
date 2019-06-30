@@ -22,14 +22,34 @@ async function getFrom(hash) {
     .map(t => t.split("\t")[1]);
 }
 
+function invertPatterns(patterns) {
+  return patterns.map(p => (p.startsWith("!") ? p.substring(1) : `!${p}`));
+}
+
 async function run() {
   const [, , hash] = process.argv;
   const protectedConfig = path.resolve(process.cwd(), "./.jsninja/protected");
-  if (!fs.existsSync(protectedConfig)) {
+  const allowedConfig = path.resolve(process.cwd(), "./.jsninja/allowed");
+
+  if (!fs.existsSync(protectedConfig) && !fs.existsSync(allowedConfig)) {
     console.log("No config found, exiting");
     process.exit(0);
   }
-  const patterns = fs.readFileSync(protectedConfig, "utf-8").split("\n");
+
+  let patterns = [];
+  if (fs.existsSync(allowedConfig)) {
+    patterns.push(
+      ...fs
+        .readFileSync(allowedConfig, "utf-8")
+        .split("\n")
+        .map(invertPatterns)
+    );
+  }
+
+  if (fs.existsSync(protectedConfig)) {
+    patterns.push(...fs.readFileSync(protectedConfig, "utf-8").split("\n"));
+  }
+
   const changedFiles = hash
     ? await getFrom(hash)
     : (await promisify(sgf)()).map(f => f.filename);
@@ -37,6 +57,7 @@ async function run() {
   const badFiles = micromatch(changedFiles, patterns, {
     dot: true
   });
+
   if (badFiles.length) {
     log("These files are protected. You can't change them:");
     badFiles.forEach(f => {
