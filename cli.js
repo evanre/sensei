@@ -22,8 +22,8 @@ async function getFrom(hash) {
     .map(t => t.split("\t")[1]);
 }
 
-function invertPatterns(patterns) {
-  return patterns.map(p => (p.startsWith("!") ? p.substring(1) : `!${p}`));
+function invertPattern(p) {
+  return p.startsWith("!") ? p.substring(1) : `!${p}`;
 }
 
 async function run() {
@@ -42,7 +42,7 @@ async function run() {
       ...fs
         .readFileSync(allowedConfig, "utf-8")
         .split("\n")
-        .map(invertPatterns)
+        .map(invertPattern)
     );
   }
 
