@@ -17,6 +17,7 @@ async function getFrom(hash) {
   const execP = promisify(exec);
   const { stdout } = await execP(`git diff --name-status ${hash}..HEAD`);
   return stdout
+    .replace(/\r\n/g, "\n")
     .split("\n")
     .filter(Boolean)
     .map(t => t.split("\t")[1]);
@@ -41,13 +42,19 @@ async function run() {
     patterns.push(
       ...fs
         .readFileSync(allowedConfig, "utf-8")
+        .replace(/\r\n/g, "\n")
         .split("\n")
         .map(invertPattern)
     );
   }
 
   if (fs.existsSync(protectedConfig)) {
-    patterns.push(...fs.readFileSync(protectedConfig, "utf-8").split("\n"));
+    patterns.push(
+      ...fs
+        .readFileSync(protectedConfig, "utf-8")
+        .replace(/\r\n/g, "\n")
+        .split("\n")
+    );
   }
 
   const changedFiles = hash
