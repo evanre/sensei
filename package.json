@@ -13,7 +13,7 @@
     "jsninja-sensei": "./cli.js"
   },
   "dependencies": {
-    "micromatch": "^4.0.2",
+    "micromatch": "^4.0.8",
     "staged-git-files": "^1.1.2"
   }
 }
